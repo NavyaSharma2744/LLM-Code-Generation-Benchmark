@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime
 
 import pandas as pd
@@ -38,6 +39,8 @@ def get_model(name: str, generation_cfg: dict):
 def run_experiment(config_path: str = "configs/benchmark.yaml"):
     with open(config_path, "r", encoding="utf-8") as f:
         config = yaml.safe_load(f)
+
+    os.makedirs("results", exist_ok=True)
 
     dataset_name = config["dataset"]
     dataset_loader = get_dataset_loader(dataset_name)
@@ -93,18 +96,19 @@ def run_experiment(config_path: str = "configs/benchmark.yaml"):
 
     df = pd.DataFrame(all_rows)
 
-    # 1) Main aggregate file
-    df.to_csv(config["output_file"], index=False)
+    # Main aggregate result file
+    output_file = config.get("output_file", "results/benchmark_results.csv")
+    df.to_csv(output_file, index=False)
 
-    # 2) Dataset-specific aggregate file
+    # Dataset-specific result file
     dataset_output_file = f"results/{dataset_name}_results.csv"
     df.to_csv(dataset_output_file, index=False)
 
-    # 3) Per-sample predictions file
+    # Detailed predictions
     with open("results/predictions.json", "w", encoding="utf-8") as f:
         json.dump(detailed_predictions, f, indent=2, ensure_ascii=False)
 
-    # 4) Experiment metadata / log file
+    # Experiment log
     experiment_log = {
         "timestamp": datetime.now().isoformat(),
         "dataset": dataset_name,
@@ -112,7 +116,7 @@ def run_experiment(config_path: str = "configs/benchmark.yaml"):
         "models": config["models"],
         "generation": config["generation"],
         "num_tasks_loaded": len(samples),
-        "aggregate_results_file": config["output_file"],
+        "aggregate_results_file": output_file,
         "dataset_results_file": dataset_output_file,
         "predictions_file": "results/predictions.json",
     }
@@ -122,7 +126,7 @@ def run_experiment(config_path: str = "configs/benchmark.yaml"):
 
     print("\nBenchmark completed.")
     print(df)
-    print(f"\nSaved aggregate results to: {config['output_file']}")
+    print(f"\nSaved aggregate results to: {output_file}")
     print(f"Saved dataset-specific results to: {dataset_output_file}")
     print("Saved detailed predictions to: results/predictions.json")
     print("Saved experiment log to: results/experiment_log.json")
