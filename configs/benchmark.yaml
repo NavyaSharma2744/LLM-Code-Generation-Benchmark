@@ -1,0 +1,13 @@
+dataset: humaneval
+max_samples: 5
+generation:
+  max_new_tokens: 128
+  temperature: 0.2
+  do_sample: false
+
+models:
+  - codellama
+  - starcoder2
+  - deepseek_coder
+
+output_file: results/benchmark_results.csv
