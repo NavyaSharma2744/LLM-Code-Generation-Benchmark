@@ -1,5 +1,10 @@
+
 # LLM-Code-Generation-Benchmark
 Evaluation pipeline for comparing large language models on program synthesis tasks using HumanEval and MBPP benchmarks.
+
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![Research](https://img.shields.io/badge/Project-Research-orange)
+![Status](https://img.shields.io/badge/Status-In%20Progress-yellow)
 
 This document summarizes model architectures, training data, benchmark results, and research gaps.
 
