@@ -1,7 +1,6 @@
 from typing import List, Dict
 from datasets import load_dataset
-from datasets.dataset_loader import BaseDatasetLoader
-
+from benchmark_datasets.dataset_loader import BaseDatasetLoader
 
 class HumanEvalLoader(BaseDatasetLoader):
     def load(self, max_samples: int | None = None) -> List[Dict]:

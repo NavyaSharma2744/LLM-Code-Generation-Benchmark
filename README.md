@@ -45,3 +45,38 @@ This project benchmarks modern code generation models including:
 - Pass@k
 - Compilation Success Rate
 - CodeBLEU
+
+## Setup and Run (macOS / Linux)
+
+# Clone the repository
+git clone https://github.com/YOUR_USERNAME/llm-code-generation-benchmark.git
+cd llm-code-generation-benchmark
+
+# Create a Python virtual environment
+python3 -m venv venv
+
+# Activate the virtual environment
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Ensure Python treats folders as packages
+touch benchmark_datasets/__init__.py
+touch models/__init__.py
+touch prompts/__init__.py
+touch execution/__init__.py
+touch evaluation/__init__.py
+touch experiments/__init__.py
+
+# Run the benchmark pipeline
+python main.py
+
+## Outputs
+
+The benchmark pipeline generates the following files in the `results/` directory:
+
+- `benchmark_results.csv` — aggregate evaluation metrics across all selected models
+- `humaneval_results.csv` or `mbpp_results.csv` — dataset-specific benchmark summary
+- `predictions.json` — per-sample generated code and execution outcomes
+- `experiment_log.json` — metadata for the benchmark run including dataset, models, and generation settings

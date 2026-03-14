@@ -1,5 +1,6 @@
-dataset: humaneval
-max_samples: 5
+dataset: mbpp
+max_samples: 2
+
 generation:
   max_new_tokens: 128
   temperature: 0.2

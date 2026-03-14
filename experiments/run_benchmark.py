@@ -1,18 +1,20 @@
-import yaml
+import json
+from datetime import datetime
+
 import pandas as pd
+import yaml
 from tqdm import tqdm
 
-from datasets.humaneval_loader import HumanEvalLoader
-from datasets.mbpp_loader import MBPPLoader
-from prompts.prompt_builder import build_prompt
-from execution.code_runner import run_generated_code
+from benchmark_datasets.humaneval_loader import HumanEvalLoader
+from benchmark_datasets.mbpp_loader import MBPPLoader
+from evaluation.codebleu import compute_codebleu
 from evaluation.compile_rate import compute_compile_rate
 from evaluation.passk import compute_pass_at_k
-from evaluation.codebleu import compute_codebleu
-
+from execution.code_runner import run_generated_code
 from models.codellama import CodeLlamaModel
-from models.starcoder2 import StarCoder2Model
 from models.deepseek_coder import DeepSeekCoderModel
+from models.starcoder2 import StarCoder2Model
+from prompts.prompt_builder import build_prompt
 
 
 def get_dataset_loader(name: str):
@@ -37,10 +39,12 @@ def run_experiment(config_path: str = "configs/benchmark.yaml"):
     with open(config_path, "r", encoding="utf-8") as f:
         config = yaml.safe_load(f)
 
-    dataset_loader = get_dataset_loader(config["dataset"])
+    dataset_name = config["dataset"]
+    dataset_loader = get_dataset_loader(dataset_name)
     samples = dataset_loader.load(max_samples=config["max_samples"])
 
     all_rows = []
+    detailed_predictions = []
 
     for model_name in config["models"]:
         print(f"\nRunning model: {model_name}")
@@ -50,7 +54,7 @@ def run_experiment(config_path: str = "configs/benchmark.yaml"):
         predictions = []
         references = []
 
-        for sample in tqdm(samples):
+        for sample in tqdm(samples, desc=f"{model_name} on {dataset_name}"):
             prompt = build_prompt(sample["prompt"])
             generated_code = model.generate_code(prompt)
             execution_result = run_generated_code(generated_code, sample["test"])
@@ -59,6 +63,20 @@ def run_experiment(config_path: str = "configs/benchmark.yaml"):
             references.append(sample["reference_solution"])
             model_results.append(execution_result)
 
+            detailed_predictions.append(
+                {
+                    "model": model_name,
+                    "dataset": dataset_name,
+                    "task_id": sample["task_id"],
+                    "prompt": sample["prompt"],
+                    "generated_code": generated_code,
+                    "reference_solution": sample["reference_solution"],
+                    "compiled": execution_result["compiled"],
+                    "passed": execution_result["passed"],
+                    "error": execution_result["error"],
+                }
+            )
+
         compile_rate = compute_compile_rate(model_results)
         pass_at_1 = compute_pass_at_k(model_results, k=1)
         codebleu = compute_codebleu(predictions, references)
@@ -66,7 +84,7 @@ def run_experiment(config_path: str = "configs/benchmark.yaml"):
         all_rows.append(
             {
                 "model": model_name,
-                "dataset": config["dataset"],
+                "dataset": dataset_name,
                 "compile_rate": compile_rate,
                 "pass@1": pass_at_1,
                 "codebleu": codebleu,
@@ -74,6 +92,37 @@ def run_experiment(config_path: str = "configs/benchmark.yaml"):
         )
 
     df = pd.DataFrame(all_rows)
+
+    # 1) Main aggregate file
     df.to_csv(config["output_file"], index=False)
+
+    # 2) Dataset-specific aggregate file
+    dataset_output_file = f"results/{dataset_name}_results.csv"
+    df.to_csv(dataset_output_file, index=False)
+
+    # 3) Per-sample predictions file
+    with open("results/predictions.json", "w", encoding="utf-8") as f:
+        json.dump(detailed_predictions, f, indent=2, ensure_ascii=False)
+
+    # 4) Experiment metadata / log file
+    experiment_log = {
+        "timestamp": datetime.now().isoformat(),
+        "dataset": dataset_name,
+        "max_samples": config["max_samples"],
+        "models": config["models"],
+        "generation": config["generation"],
+        "num_tasks_loaded": len(samples),
+        "aggregate_results_file": config["output_file"],
+        "dataset_results_file": dataset_output_file,
+        "predictions_file": "results/predictions.json",
+    }
+
+    with open("results/experiment_log.json", "w", encoding="utf-8") as f:
+        json.dump(experiment_log, f, indent=2, ensure_ascii=False)
+
     print("\nBenchmark completed.")
     print(df)
+    print(f"\nSaved aggregate results to: {config['output_file']}")
+    print(f"Saved dataset-specific results to: {dataset_output_file}")
+    print("Saved detailed predictions to: results/predictions.json")
+    print("Saved experiment log to: results/experiment_log.json")

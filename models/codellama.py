@@ -6,8 +6,8 @@ class CodeLlamaModel(BaseModel):
     def __init__(self, max_new_tokens: int = 128, temperature: float = 0.2, do_sample: bool = False):
         self.generator = pipeline(
             "text-generation",
-            model="codellama/CodeLlama-7b-hf",
-            device_map="auto",
+            model="Salesforce/codegen-350M-mono",
+            device=-1,
         )
         self.max_new_tokens = max_new_tokens
         self.temperature = temperature
