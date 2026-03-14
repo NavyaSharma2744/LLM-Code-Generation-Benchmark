@@ -7,7 +7,7 @@ class StarCoder2Model(BaseModel):
         self.generator = pipeline(
             "text-generation",
             model="Salesforce/codegen-350M-mono",
-            device=-1,
+            device=0,
         )
         self.max_new_tokens = max_new_tokens
         self.temperature = temperature
