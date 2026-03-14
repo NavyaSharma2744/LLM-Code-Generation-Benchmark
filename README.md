@@ -7,12 +7,13 @@
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Stars](https://img.shields.io/github/stars/NavyaSharma2744/llm-code-generation-benchmark?style=social)
 
-Benchmarking large language models for **code generation and program synthesis** using standard benchmarks such as HumanEval and MBPP.  
-The project evaluates model performance using metrics like **Pass@k, compilation success rate, and CodeBLEU**.
+Benchmarking large language models for **code generation and program synthesis** using standard benchmarks such as **HumanEval** and **MBPP**.  
+
+The project evaluates model performance using metrics like **Pass@k**, **compilation success rate**, and **CodeBLEU**.
 
 ---
 
-## Environment
+# Environment
 
 | Component | Version |
 |----------|--------|
@@ -23,7 +24,7 @@ The project evaluates model performance using metrics like **Pass@k, compilation
 
 ---
 
-## Supported Models
+# Supported Models
 
 This project benchmarks modern code generation models including:
 
@@ -33,23 +34,32 @@ This project benchmarks modern code generation models including:
 
 ---
 
-## Benchmarks
+# Benchmarks
 
-- HumanEval
-- MBPP
+The following datasets are used for evaluation:
+
+- **HumanEval** – Python function synthesis benchmark
+- **MBPP** – Mostly Basic Python Problems dataset
 
 ---
 
-## Evaluation Metrics
+# Evaluation Metrics
 
-- Pass@k
-- Compilation Success Rate
-- CodeBLEU
+The benchmark evaluates models using:
 
-## Setup and Run (macOS / Linux)
+- **Pass@k** – probability that at least one generated program passes all tests  
+- **Compilation Success Rate** – percentage of generated programs that execute without syntax errors  
+- **CodeBLEU** – similarity between generated code and reference implementation  
 
+---
+
+# Setup and Run (macOS / Linux)
+
+```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/llm-code-generation-benchmark.git
+git clone https://github.com/NavyaSharma2744/llm-code-generation-benchmark.git
+
+# Move into the project directory
 cd llm-code-generation-benchmark
 
 # Create a Python virtual environment
@@ -71,12 +81,3 @@ touch experiments/__init__.py
 
 # Run the benchmark pipeline
 python main.py
-
-## Outputs
-
-The benchmark pipeline generates the following files in the `results/` directory:
-
-- `benchmark_results.csv` — aggregate evaluation metrics across all selected models
-- `humaneval_results.csv` or `mbpp_results.csv` — dataset-specific benchmark summary
-- `predictions.json` — per-sample generated code and execution outcomes
-- `experiment_log.json` — metadata for the benchmark run including dataset, models, and generation settings
