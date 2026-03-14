@@ -1,41 +1,46 @@
+# LLM Code Generation Benchmark
 
-# LLM-Code-Generation-Benchmark
-Evaluation pipeline for comparing large language models on program synthesis tasks using HumanEval and MBPP benchmarks.
-
-![Python](https://img.shields.io/badge/Python-3.10-blue)
-![Research](https://img.shields.io/badge/Project-Research-orange)
+![Python](https://img.shields.io/badge/Python-3.14-blue)
 ![Status](https://img.shields.io/badge/Status-In%20Progress-yellow)
+![Project](https://img.shields.io/badge/Type-Research%20Project-orange)
+![Focus](https://img.shields.io/badge/Focus-Code%20Generation%20LLMs-purple)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-This document summarizes model architectures, training data, benchmark results, and research gaps.
-
----
-
-## Example Result Table
-
-| Model | Pass@1 | Pass@5 | CodeBLEU |
-|------|-------|-------|---------|
-| Code Llama | 42% | 63% | 0.38 |
-| DeepSeek Coder | 47% | 69% | 0.41 |
-| StarCoder2 | 39% | 60% | 0.35 |
-
-*Results shown here are placeholders. Final results will be generated through experiments.*
+Benchmarking large language models for **code generation and program synthesis** using standard benchmarks such as HumanEval and MBPP.  
+The project evaluates model performance using metrics like **Pass@k, compilation success rate, and CodeBLEU**.
 
 ---
 
-## Future Work
+## Environment
 
-Potential extensions of this project include:
-
-- Evaluating more recent code LLMs
-- Testing program translation tasks
-- Studying prompt engineering strategies
-- Investigating execution efficiency of generated programs
+| Component | Version |
+|----------|--------|
+| Python | **3.14** |
+| PyTorch | 2.x |
+| Transformers | Latest |
+| OS | Linux / macOS |
 
 ---
 
-## Author
+## Supported Models
 
-Navya Sharma  
-Artificial Intelligence Research Student  
+This project benchmarks modern code generation models including:
 
-Interests: NLP, Code Intelligence, LLM Evaluation, AI Systems
+- Code Llama
+- StarCoder2
+- DeepSeek Coder
+
+---
+
+## Benchmarks
+
+- HumanEval
+- MBPP
+
+---
+
+## Evaluation Metrics
+
+- Pass@k
+- Compilation Success Rate
+- CodeBLEU
