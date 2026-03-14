@@ -81,3 +81,13 @@ touch experiments/__init__.py
 
 # Run the benchmark pipeline
 python main.py
+
+## Result Analysis
+
+Benchmark results can be explored using the notebook:
+
+notebooks/result_analysis.ipynb
+
+The notebook loads the benchmark output file:
+
+results/benchmark_results.csv
