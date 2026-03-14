@@ -5,6 +5,7 @@
 ![Project](https://img.shields.io/badge/Type-Research%20Project-orange)
 ![Focus](https://img.shields.io/badge/Focus-Code%20Generation%20LLMs-purple)
 ![License](https://img.shields.io/badge/License-MIT-green)
+![Stars](https://img.shields.io/github/stars/NavyaSharma2744/llm-code-generation-benchmark?style=social)
 
 Benchmarking large language models for **code generation and program synthesis** using standard benchmarks such as HumanEval and MBPP.  
 The project evaluates model performance using metrics like **Pass@k, compilation success rate, and CodeBLEU**.
